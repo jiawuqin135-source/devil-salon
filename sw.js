@@ -1,0 +1,4 @@
+const CACHE="devil-salon-github-v1";const ASSETS=["./", "icon.png", "index.html", "salon-background.webp", "actors.webp", "audio.js", "guests.webp", "style.css", "engine.js", "manifest.webmanifest", "presentation.js", "app.js", "win.wav", "lose.wav", "dodge.wav", "snip.wav", "warning.wav", "page.wav", "start.wav", "magic.wav", "ring.wav", "go.wav", "sip.wav", "heartbeat.wav"];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('devil-salon-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==location.origin)return;e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request)));});

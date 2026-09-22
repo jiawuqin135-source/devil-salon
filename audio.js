@@ -1,0 +1,7 @@
+(function(root){'use strict';const names=['snip','ring','warning','heartbeat','start','go','magic','dodge','win','lose','sip','page'];class SoundBank{
+ constructor(enabled=true){this.enabled=enabled;this.sources=new Set();this.raw={};this.decoded={};for(const name of names)this.raw[name]=fetch('./'+name+'.wav').then(r=>{if(!r.ok)throw Error('audio');return r.arrayBuffer();}).catch(()=>null);}
+ unlock(){if(!this.enabled)return;try{this.ctx=this.ctx||new(window.AudioContext||window.webkitAudioContext)();if(this.ctx.state==='suspended')this.ctx.resume().catch(()=>{});}catch{}}
+ setEnabled(value){this.enabled=value;if(!value)this.stop();else this.unlock();}
+ stop(){this.epoch=(this.epoch||0)+1;for(const s of this.sources){try{s.stop();}catch{}}this.sources.clear();}
+ play(name){if(!this.enabled||!this.ctx||!this.raw[name])return;const epoch=this.epoch||0;const context=this.ctx;const buffer=this.decoded[name]||(this.decoded[name]=this.raw[name].then(raw=>raw?context.decodeAudioData(raw.slice(0)):null).catch(()=>null));buffer.then(b=>{if(!b||!this.enabled||epoch!==(this.epoch||0)||context.state!=='running')return;const src=context.createBufferSource(),gain=context.createGain();src.buffer=b;gain.gain.value=name==='heartbeat'?.65:.8;src.connect(gain);gain.connect(context.destination);this.sources.add(src);src.onended=()=>{this.sources.delete(src);src.disconnect();gain.disconnect();};src.start();});}
+}root.SalonSound=SoundBank;})(window);

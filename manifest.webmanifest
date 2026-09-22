@@ -1,0 +1,1 @@
+{"name": "恶魔理发师", "short_name": "恶魔理发师", "lang": "zh-CN", "start_url": "./", "scope": "./", "display": "standalone", "orientation": "portrait", "background_color": "#222126", "theme_color": "#222126", "icons": [{"src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}
